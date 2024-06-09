@@ -243,6 +243,33 @@
             });
         }
     </script>
-    
+    <div class="form-control">
+        <form action="" method="post" class="form_1">
+            <input type="text" name="name" id="name">
+            <input type="submit" value="submit" id="submit_b">
+        </form>
+    </div>
+    <script>
+        $(document).ready(function(){
+            $(".form_1").submit(function(){
+                event.preventDefault();
+                // Serialize form data
+                var formData = $(this).serialize();
+                $.ajax({
+                    type:"POST",
+                    url:"create/",
+                    data: formData,
+                    scucess:function(responses){
+                        console.log(responses.data)
+                    },
+                    error: function(xhr, status, error){
+            // Handle errors
+            console.error(xhr.responseText);
+            alert("Error: " + xhr.responseText);
+          }
+                })
+            })
+        })
+    </script>
 </body>
 </html>
