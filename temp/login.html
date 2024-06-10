@@ -17,12 +17,12 @@
             <div class="col form-control" style="margin-right: 20px;">
                 <form action="" method="post">{%csrf_token%}
                 <div class="mb-3" style="margin-top: 40px;">
-                    <label for="formGroupExampleInput" class="form-label">User Name or Email</label>
-                    <input type="text" class="form-control" name="username" id="formGroupExampleInput" placeholder="Example User Name Or Email">
+                    <label for="formGroupExampleInput" class="form-label">User Name or Email (<span style="color: red;">*</span>)</label>
+                    <input type="text" class="form-control" name="username" id="formGroupExampleInput" required placeholder="Example User Name Or Email">
                   </div>
                   <div class="mb-3">
-                    <label for="formGroupExampleInput" class="form-label">password</label>
-                    <input type="password" class="form-control" id="formGroupExampleInput" name="password" placeholder="Example Password">
+                    <label for="formGroupExampleInput" class="form-label">password(<span style="color: red;">*</span>)</label>
+                    <input type="password" class="form-control" id="formGroupExampleInput" name="password" required placeholder="Example Password">
                   </div>
                   <a href="{% url 'admin_register'%}">Register</a>
                   <input type="submit" value="Submit" class="btn btn-primary" style="margin-left: 80%;">
