@@ -32,8 +32,8 @@ class Project(models.Model):
     employee=models.ForeignKey(Employee,on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
-    photo = models.ImageField(upload_to='employee/') 
-class Gender(models.Model):
-    name=models.CharField(max_length=10,blank=True,null=True)
-
+    
+class Photo(models.Model):
+    employee=models.ForeignKey(Employee,on_delete=models.CASCADE)
+    img= models.ImageField(upload_to='employee/',blank=True,null=True) 
 

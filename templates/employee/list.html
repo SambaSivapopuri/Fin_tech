@@ -1,275 +1,252 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Employee List</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Form Popup</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Employee List</h1>
-    <button class="btn btn-primary" data-toggle="modal" data-target="#addEmployeeModal">Add Employee</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-            <tr>
-                <td>{{ employee.name }}</td>
-                <td>{{ employee.email }}</td>
-                <td>{{ employee.age }}</td>
-                <td>{{ employee.gender }}</td>
-                <td>
-                    <button class="btn btn-info" onclick="editEmployee({{ employee.id }})">Edit</button>
-                    <button class="btn btn-danger" onclick="deleteEmployee({{ employee.id }})">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addEmployeeModalLabel">Employee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <h1>Employee</h1>
-                        <form id="employeeForm">
-                            <input type="hidden" id="employeeId" name="employeeId">
-                            <div class="form-group">
-                                <label for="name">Name:</label>
-                                <input type="text" class="form-control" id="name" name="name">
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email">
-                            </div>
-                            <div class="form-group">
-                                <label for="age">Age:</label>
-                                <input type="number" class="form-control" id="age" name="age">
-                            </div>
-                            <div class="form-group">
-                                <label for="gender">Select Gender</label>
-                                <select name="gender" id="gender" class="form-control">
-                                    
-                                    {%for i in gender%}
-                                    <option value="{{i.id}}">{{i.name}}</option>
-                                    {%endfor%}
-                                </select>
-                               
-                            </div>
-                            <div class="form-group">
-                                <label for="phoneNo">Phone No:</label>
-                                <input type="text" class="form-control" id="phoneNo" name="phoneNo">
-                            </div>
-                            <!-- Address fields -->
-                            <h3>Address Details</h3>
-                            <div class="form-group">
-                                <label for="hno">House No:</label>
-                                <input type="text" class="form-control" id="hno" name="addressDetails.hno">
-                            </div>
-                            <div class="form-group">
-                                <label for="street">Street:</label>
-                                <input type="text" class="form-control" id="street" name="addressDetails.street">
-                            </div>
-                            <div class="form-group">
-                                <label for="city">City:</label>
-                                <input type="text" class="form-control" id="city" name="addressDetails.city">
-                            </div>
-                            <div class="form-group">
-                                <label for="state">State:</label>
-                                <input type="text" class="form-control" id="state" name="addressDetails.state">
-                            </div>
-                            <!-- Work Experience fields -->
-                            <h3>Work Experience</h3>
-                            <div class="form-group">
-                                <label for="companyName">Company Name:</label>
-                                <input type="text" class="form-control" id="companyName" name="workExperience.companyName">
-                            </div>
-                            <div class="form-group">
-                                <label for="fromDate">From Date:</label>
-                                <input type="date" class="form-control" id="fromDate" name="workExperience.fromDate">
-                            </div>
-                            <div class="form-group">
-                                <label for="toDate">To Date:</label>
-                                <input type="date" class="form-control" id="toDate" name="workExperience.toDate">
-                            </div>
-                            <div class="form-group">
-                                <label for="workAddress">Address:</label>
-                                <input type="text" class="form-control" id="workAddress" name="workExperience.address">
-                            </div>
-                            <!-- Qualifications fields -->
-                            <h3>Qualifications</h3>
-                            <div class="form-group">
-                                <label for="qualificationName">Qualification Name:</label>
-                                <input type="text" class="form-control" id="qualificationName" name="qualifications.qualificationName">
-                            </div>
-                            <div class="form-group">
-                                <label for="percentage">Percentage:</label>
-                                <input type="number" class="form-control" id="percentage" name="qualifications.percentage">
-                            </div>
-                            <!-- Projects fields -->
-                            <h3>Projects</h3>
-                            <div class="form-group">
-                                <label for="projectTitle">Title:</label>
-                                <input type="text" class="form-control" id="projectTitle" name="projects.title">
-                            </div>
-                            <div class="form-group">
-                                <label for="projectDescription">Description:</label>
-                                <textarea class="form-control" id="projectDescription" name="projects.description"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="photo">Photo:</label>
-                                <input type="file" class="form-control-file" id="photo" name="projects.photo">
-                            </div>
-                            <button type="button" class="btn btn-primary" onclick="submitEmployeeForm()">Save</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <div class="modal fade" id="editEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editEmployeeModalLabel">Edit Employee</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
+  <div class="container mt-5">
+    <button type="button" class="btn btn-primary" onclick="openEmployeeadd()">
+      Open Employee Form
+    </button>
+  </div>
+
+  <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="employeeModalLabel">Employee Form</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        <div class="modal-body">
+          <form id="employeeForm">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter email">
+            </div>
+            <div class="form-group">
+              <label for="age">Age</label>
+              <input type="number" class="form-control" id="age" placeholder="Enter age">
+            </div>
+            <div class="form-group">
+              <label for="gender">Gender</label>
+              <input type="text" class="form-control" id="gender" placeholder="Enter gender">
+            </div>
+            <div class="form-group">
+              <label for="phoneNo">Phone Number</label>
+              <input type="text" class="form-control" id="phoneNo" placeholder="Enter phone number">
+            </div>
+            <button type="button" class="btn btn-primary" onclick="add_employee()">Submit</button>
+          </form>
+        </div>
+      </div>
     </div>
-    <script>
-        function editEmployee(employeeId) {
-            $.ajax({
-                url: `/employee/get/${employeeId}/`,
-                type: 'GET',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        const employee = response.employee;
-                        $('#editEmployeeModal #employeeId').val(employeeId);
-                        $('#editEmployeeModal #name').val(employee.name);
-                        $('#editEmployeeModal #email').val(employee.email);
-                        $('#editEmployeeModal #age').val(employee.age);
-                        $('#editEmployeeModal #gender').val(employee.gender);
-                        $('#editEmployeeModal #phoneNo').val(employee.phoneNo);
-                        $('#editEmployeeModal #hno').val(employee.addressDetails.hno);
-                        $('#editEmployeeModal #street').val(employee.addressDetails.street);
-                        $('#editEmployeeModal #city').val(employee.addressDetails.city);
-                        $('#editEmployeeModal #state').val(employee.addressDetails.state);
-                        // Handle other fields similarly
-    
-                        $('#editEmployeeModal').modal('show');
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                }
-            });
-        }
-    
-        function deleteEmployee(employeeId) {
-            $.ajax({
-                url: `/employee/delete/${employeeId}/`,
-                type: 'POST',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        location.reload();
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                }
-            });
-        }
-    </script>
-    <script>
-        function submitEmployeeForm() {
-            const formData = {
-                name: $('#name').val(),
-                email: $('#email').val(),
-                age: $('#age').val(),
-                gender: $('#gender').val(),
-                phoneNo: $('#phoneNo').val(),
-                addressDetails: {
-                    hno: $('#hno').val(),
-                    street: $('#street').val(),
-                    city: $('#city').val(),
-                    state: $('#state').val(),
-                    companyName:$("#companyName").val(),
-                    fromDate:$("#fromDate").val(),
-                    toDate:$("#toDate").val(),
-                    workAddress:$("#workAddress").val(),
-                    qualificationName:$("#qualificationName").val(),
-                    percentage:$("#percentage").val(),
-                    projectTitle:$("#projectTitle").val(),
-                    projectDescription:$("#projectDescription").val(),
-                    photo:$("#photo").val()
-                },
-                // Include other fields here
-            };
-    
-            let url = 'create/';
-            const employeeId = $('#employeeId').val();
-            if (employeeId) {
-                url = `/employee/update/${employeeId}/`;
-            }
-    
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: JSON.stringify(formData),
-                contentType: 'application/json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        // Redirect or show success message
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                }
-            });
-        }
-    </script>
-    <div class="form-control">
-        <form action="" method="post" class="form_1">
-            <input type="text" name="name" id="name">
-            <input type="submit" value="submit" id="submit_b">
-        </form>
+  </div>
+  <div class="modal fade" id="employeeaddress" tabindex="-1" aria-labelledby="employeeaddressLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="employeeModalLabel">Employee Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="employeeForm">
+            <div class="form-group">
+              <label for="hno">house No</label>
+              <input type="text" class="form-control" id="hno" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+              <label for="street">Street</label>
+              <input type="text" class="form-control" id="street" placeholder="Enter street">
+            </div>
+            <div class="form-group">
+              <label for="city">city</label>
+              <input type="text" class="form-control" id="city" placeholder="Enter city">
+            </div>
+            <div class="form-group">
+              <label for="gender">state</label>
+              <input type="text" class="form-control" id="state" placeholder="Enter state">
+            </div>
+            <div class="form-group">
+                <label for="companyName">company Name</label>
+                <input type="text" class="form-control" id="companyName" placeholder="Enter company Name">
+            </div>
+            <div class="form-group">
+                <label for="fromDate">From Date</label>
+                <input type="date" class="form-control" id="fromDate" placeholder="Enter fromDate">
+            </div>
+            <div class="form-group">
+                <label for="toDate">To Date</label>
+                <input type="date" class="form-control" id="toDate" placeholder="Enter toDate">
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" class="form-control" id="address" placeholder="Enter address">
+            </div>
+            <div class="form-group">
+                <label for="qualificationName">Qualification Name</label>
+                <input type="text" class="form-control" id="qualificationName" placeholder="Enter qualification Name">
+            </div>
+            <div class="form-group">
+                <label for="percentage">Percentage</label>
+                <input type="text" class="form-control" id="percentage" placeholder="Enter percentage">
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Enter title">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <input type="text" class="form-control" id="description" placeholder="Enter description">
+            </div>
+            <!-- <div class="form-group">
+                <label for="photo">Photo</label>
+                <input type="file" class="form-control" id="photo" placeholder="Enter photo">
+            </div> -->
+            <button type="button" class="btn btn-primary" onclick="other_details()">Submit</button>
+          </form>
+        </div>
+      </div>
     </div>
-    <script>
-        $(document).ready(function(){
-            $(".form_1").submit(function(){
-                event.preventDefault();
-                // Serialize form data
-                var formData = $(this).serialize();
-                $.ajax({
-                    type:"POST",
-                    url:"create/",
-                    data: formData,
-                    scucess:function(responses){
-                        console.log(responses.data)
-                    },
-                    error: function(xhr, status, error){
-            // Handle errors
-            console.error(xhr.responseText);
-            alert("Error: " + xhr.responseText);
-          }
-                })
-            })
-        })
-    </script>
+  </div>
+
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Gender</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Add Details</th>
+        <th scope="col">Update</th>
+        <th scope="col">Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+        {%for i in employee%}
+
+      <tr>
+        <td></td>
+        <td>{{i.name}}</td>
+        <td>{{i.email}}</td>
+        <td>{{i.gender}}</td>
+        <td>{{i.phoneNo}}</td>
+        <td>
+            <button type="button" class="btn btn-primary" id="{{i.id}}" onclick="openEmployee_addres('{{i.id}}')">
+            +
+          </button></td>
+          <td>
+            <button class="btn btn-primary" onclick="get_employee()">get</button>
+          </td>
+          
+      </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+
+  <script>
+    var empolyeeId=""
+    function openEmployeeadd() {
+      $('#employeeModal').modal('show');
+    }
+    function openEmployee_addres(id){
+        empolyeeId =id;
+        $('#employeeaddress').modal('show');
+    }
+    function other_details(){
+        var fromDate = new Date($('#fromDate').val());
+        var toDate = new Date($('#toDate').val());
+        var formattedFromDate = fromDate.toISOString().split('T')[0];
+        var formattedToDate = toDate.toISOString().split('T')[0];
+        const data={
+            employee_id:empolyeeId,
+            hno :$("#hno").val(),
+            street:$("#street").val(),
+            city:$("#city").val(),
+            state:$("#state").val(),
+            companyName:$("#companyName").val(),
+            fromDate:formattedFromDate,
+            toDate:formattedToDate,
+            address:$("#address").val(),
+            qualificationName:$("#qualificationName").val(),
+            percentage :$("#percentage").val(),
+            title :$("#title").val(),
+            description :$("#description").val(),
+        };
+        $.ajax({
+        url: '/create_employee/',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response) {
+          alert('Employee detaiils successfully added..');
+          $('#employeeaddress').modal('hide');
+          
+        },
+        error: function(response) {
+          alert('Error: ' + response.responseJSON.error);
+        }
+      });
+    }
+
+
+    function add_employee() {
+      const data = {
+        name: $('#name').val(),
+        email: $('#email').val(),
+        age: $('#age').val(),
+        gender: $("#gender").val(),
+        phoneNo: $("#phoneNo").val(),
+        
+      };
+
+      $.ajax({
+        url: '/create_employee/',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: 'application/json',
+        success: function(response) {
+          alert('Employee created successfully');
+          $('#employeeModal').modal('hide');
+        },
+        error: function(response) {
+          alert('Error: ' + response.responseJSON.error);
+        }
+      });
+      location.reload();
+    }
+    function get_employee(){
+        $.ajax({
+  url: 'http://localhost:8000/employee/2/',
+  type: 'GET',
+  dataType: 'json',
+  success: function(data) {
+    // Work with the JSON data here
+    console.log(data);
+  },
+  error: function(xhr, status, error) {
+    console.error('Error:', error);
+  }
+});
+
+    }
+
+  </script>
 </body>
 </html>

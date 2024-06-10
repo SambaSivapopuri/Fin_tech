@@ -1,159 +1,79 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import get_object_or_404
 from .models import *
 import json
-
-@csrf_exempt
-def employee_detail(request, employee_id):
-    employee = get_object_or_404(Employee, pk=employee_id)
-    address = Address.objects.filter(employee=employee).first()
-    work_experience = WorkExperience.objects.filter(employee=employee)
-    qualifications = Qualification.objects.filter(employee=employee)
-    projects = Project.objects.filter(employee=employee)
-    return JsonResponse({'employee': employee})
-
+import base64
+from PIL import Image
+from io import BytesIO
+def decode_base64_image(base64_data):
+    # Remove the data URL prefix if present
+    if base64_data.startswith('data:image'):
+        base64_data = base64_data.split(',')[1]
+    
+    # Decode the base64 data
+    binary_data = base64.b64decode(base64_data)
+    return binary_data
+def employee_list(request):
+    try:
+        return render(request,"employee/list.html",{"employee":Employee.objects.all()})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
+@csrf_exempt 
+def get_employee_list(request):
+    if request.method == "POST":
+        return JsonResponse({"employee":list(Employee.objects.al())})
 @csrf_exempt
 def create_employee(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-
-            # Extract data
-            name = data.get('name')
-            email = data.get('email')
-            age = data.get('age')
-            gender = data.get('gender')
-            phone_no = data.get('phoneNo')
-
-            # Create Employee
-            employee = Employee.objects.create(name=name, email=email, age=age, gender=gender, phoneNo=phone_no)
-
-            # Create Address
-            address_data = data.get('address')
-            address = Address.objects.create(employee=employee, **address_data)
-
-            # Create Work Experience
-            work_experience_data = data.get('work_experience')
-            for exp in work_experience_data:
-                WorkExperience.objects.create(employee=employee, **exp)
-
-            # Create Qualification
-            qualification_data = data.get('qualifications')
-            for qual in qualification_data:
-                Qualification.objects.create(employee=employee, **qual)
-
-            # Create Project
-            project_data = data.get('projects')
-            for proj in project_data:
-                Project.objects.create(employee=employee, **proj)
-
-            return JsonResponse({'message': 'Employee created successfully'}, status=201)
-        
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-    
-    return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
-
-@csrf_exempt
-def edit_employee(request, employee_id):
-    if request.method == 'POST':
-        try:
-            employee = Employee.objects.get(pk=employee_id)
-            data = json.loads(request.body)
-
-            # Update Employee
-            employee.name = data.get('name')
-            employee.email = data.get('email')
-            employee.age = data.get('age')
-            employee.gender = data.get('gender')
-            employee.phoneNo = data.get('phoneNo')
-            employee.save()
-
-            # Update Address
-            address = Address.objects.get(employee=employee)
-            address_data = data.get('address')
-            for key, value in address_data.items():
-                setattr(address, key, value)
-            address.save()
-
-            # Update Work Experience
-            work_experience_data = data.get('work_experience')
-            for exp_data in work_experience_data:
-                exp_id = exp_data.pop('id', None)
-                if exp_id:
-                    exp = WorkExperience.objects.get(pk=exp_id)
-                    for key, value in exp_data.items():
-                        setattr(exp, key, value)
-                    exp.save()
-                else:
-                    exp_data['employee'] = employee
-                    WorkExperience.objects.create(**exp_data)
-
-            # Update Qualifications
-            qualification_data = data.get('qualifications')
-            for qual_data in qualification_data:
-                qual_id = qual_data.pop('id', None)
-                if qual_id:
-                    qual = Qualification.objects.get(pk=qual_id)
-                    for key, value in qual_data.items():
-                        setattr(qual, key, value)
-                    qual.save()
-                else:
-                    qual_data['employee'] = employee
-                    Qualification.objects.create(**qual_data)
-
-            # Update Projects
-            project_data = data.get('projects')
-            for proj_data in project_data:
-                proj_id = proj_data.pop('id', None)
-                if proj_id:
-                    proj = Project.objects.get(pk=proj_id)
-                    for key, value in proj_data.items():
-                        setattr(proj, key, value)
-                    proj.save()
-                else:
-                    proj_data['employee'] = employee
-                    Project.objects.create(**proj_data)
-
-            return JsonResponse({'message': 'Employee updated successfully'}, status=200)
-
-        except Employee.DoesNotExist:
-            return JsonResponse({'error': 'Employee does not exist'}, status=404)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-
-    return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
-@csrf_exempt
-def delete_employee(request, employee_id):
-    if request.method == 'DELETE':
-        try:
-            employee = Employee.objects.get(pk=employee_id)
+            print(data)
+            if data.get("employee_id") and Employee.objects.get(id=data.get("employee_id")):
+                employee=Employee.objects.get(id=data.get("employee_id"))
+                Address.objects.create(employee=employee,hno=data.get("hno"),street=data.get("street"),city=data.get("city"),state=data.get("state"))
+                
+                WorkExperience.objects.create(employee=employee,companyName=data.get("companyName"),fromDate=data.get("fromDate"),toDate=data.get("toDate"),address=data.get("address"))
+                
+                Qualification.objects.create(employee=employee,qualificationName=data.get("qualificationName"),percentage=data.get("percentage"))
+                
+                Project.objects.create(employee=employee,title=data.get("title"),description=data.get("description"))
+                
+                return JsonResponse({'message': 'Employee Details successfully', 'employee_id': employee.id})
+            else:
+                employee = Employee.objects.create(name=data.get("name"), email=data.get("email"), age=data.get("age"), gender=data.get("gender"), phoneNo=data.get("phoneNo"))
             
-            # Delete related models
-            Address.objects.filter(employee=employee).delete()
-            WorkExperience.objects.filter(employee=employee).delete()
-            Qualification.objects.filter(employee=employee).delete()
-            Project.objects.filter(employee=employee).delete()
-
-            # Delete employee
-            employee.delete()
-
-            return JsonResponse({'message': 'Employee deleted successfully'}, status=204)
-        
-        except Employee.DoesNotExist:
-            return JsonResponse({'error': 'Employee does not exist'}, status=404)
+            return JsonResponse({'message': 'Employee created successfully', 'employee_id': employee.id})
         except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
+            return JsonResponse({'error': str(e)}, status=500)
+    return JsonResponse({'error': str(e)}, status=500)
 
-    return JsonResponse({'error': 'Only DELETE requests are allowed'}, status=405)
+# @csrf_exempt
+def employee_details(request,id):
+    if request.method == 'POST' :
+        Photo.objects.create(employee_id=id,img=request.FILES.get('photo'))
+        
+        return render(request,"employee/employee_details.html",{"employee":Employee.objects.get(id=id),
+                                                # "address":Address.objects.filter(employee_id=id).first(),
+                                                # "workExperience":WorkExperience.objects.filter(employee_id=id),
+                                                # "qualification":Qualification.objects.filter(employee_id=id),
+                                                # "project":Project.objects.filter(employee_id=id)
+                                                })
+    return render(request,"employee/employee_details.html",{"employee":Employee.objects.get(id=id),
+                                                # "address":Address.objects.filter(employee_id=id).first(),
+                                                # "workExperience":WorkExperience.objects.filter(employee_id=id),
+                                                # "qualification":Qualification.objects.filter(employee_id=id),
+                                                # "project":Project.objects.filter(employee_id=id)
+                                                })
 
-def employee_list(request):
-    
-    try:
-        return render(request,"employee/list.html",{"employees":Employee.objects.all(),"gender":Gender.objects.all()})
+def upload_image(request):
+    if request.method == 'POST':
+        description = request.POST.get('employee_id')
+        image_file = request.FILES.get('img')
 
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
-    
+        # Create a new UploadedImage instance and save it
+        uploaded_image = Photo(employee=Employee.objects.get(id=id), description=description, image=image_file)
+        uploaded_image.save()
+
+        return redirect('upload_success')
+    return render(request, 'upload_image.html')
